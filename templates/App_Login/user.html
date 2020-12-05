@@ -1,0 +1,82 @@
+{% extends 'navbar.html' %}
+{% block title_block %} {{user.user_profile.full_name}} @{{user.username}} {% endblock %}
+{% block css_block %}
+<style>
+  .crop{
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+  }
+  .crop_ima{
+    width: 400px;
+    height: 300px;
+    margin: -75px 0 0 -100px;
+  }
+</style>
+{% endblock %}
+{% block body_block %}
+<div class="row">
+  <div class="col-sm-4">
+    {% if user.user_profile.profile_pics %}
+    <img src="/media/{{user.user_profile.profile_pics}}" width='150px' hight='150px' class="rounded-circle">
+    {% else %}
+    <img src="/media/propic.png" width='150px' hight='150px' class="rounded-circle">
+    {% endif %}
+  </div>
+  <div class="col-sm-8">
+    <h4>{{user.username}} &nbsp; <a href="{% url 'App_Login:edit_profile'%}" class="btn btn-primary"> Edit Profile </a></h4>
+    <br>
+    {{user.posts.count}} Posts, &nbsp; &nbsp; &nbsp; {{user.fllower.count}} Fllowers, &nbsp; &nbsp; &nbsp {{user.fllowing.count}} Fllowing
+    <br>
+    <h4>{{user.user_profile.full_name}}</h4>
+    {{user.user_profile.description|linebreaks}}
+  </div>
+  </div>
+  <hr>
+  <br>
+
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+    Create New Post
+  </button>
+
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Post a Photo</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form method="POST", enctype="multipart/form-data">
+          {{form.as_p}}
+          {% csrf_token %}
+          <button type="submit">Post</button>
+
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<br>
+<br>
+<div class="row">
+  {%for posts in user.posts.all%}
+   <div class="crop">
+     <img src="/media/{{posts.images}}" title='{{posts.caption}}'>
+   </div>
+  {%endfor%}
+</div>
+
+{% endblock %}
